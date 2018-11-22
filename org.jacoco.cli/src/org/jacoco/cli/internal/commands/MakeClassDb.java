@@ -82,6 +82,8 @@ public class MakeClassDb extends Command {
 			final InputStream in = new FileInputStream(file);
 			try {
 				count += parseClassFile(in, file.getPath());
+			} catch (Exception e){
+				e.printStackTrace();
 			} finally {
 				in.close();
 			}

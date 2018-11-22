@@ -87,7 +87,9 @@ public class Instrument extends Command {
 			try {
 				return instrumenter.instrumentAll(input, output,
 						src.getAbsolutePath());
-			} finally {
+			}catch (Exception e){
+				e.printStackTrace();
+			}  finally {
 				output.close();
 			}
 		} catch (final IOException e) {
@@ -96,6 +98,7 @@ public class Instrument extends Command {
 		} finally {
 			input.close();
 		}
+		return -1;
 	}
 
 }

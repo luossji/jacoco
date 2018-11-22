@@ -59,9 +59,10 @@ public class SqliteHelper {
             resultSet = getStatement().executeQuery(sql);
             T rs = rse.extractData(resultSet);
             return rs;
-        } finally {
-            // destroyed();
+        } catch (Exception e){
+            e.printStackTrace();
         }
+        return null;
     }
 
     /**
@@ -80,8 +81,8 @@ public class SqliteHelper {
             while (resultSet.next()) {
                 rsList.add(rm.mapRow(resultSet, resultSet.getRow()));
             }
-        } finally {
-            // destroyed();
+        } catch (Exception e){
+            e.printStackTrace();
         }
         return rsList;
     }
@@ -97,10 +98,10 @@ public class SqliteHelper {
         try {
             int c = getStatement().executeUpdate(sql);
             return c;
-        } finally {
-            // destroyed();
+        } catch (Exception e){
+            e.printStackTrace();
         }
-
+        return -1;
     }
 
     /**
@@ -114,8 +115,8 @@ public class SqliteHelper {
             for (String sql : sqls) {
                 getStatement().executeUpdate(sql);
             }
-        } finally {
-            // destroyed();
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -130,8 +131,8 @@ public class SqliteHelper {
             for (String sql : sqls) {
                 getStatement().executeUpdate(sql);
             }
-        } finally {
-            // destroyed();
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 
