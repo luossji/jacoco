@@ -50,7 +50,7 @@ public class Main extends Command {
 
 	@Override
 	public String description() {
-		return "Command line interface for JaCoCo.";
+		return "Command line interface for JaCoCo. Excend for KugouTestRecord(sijiluo)";
 	}
 
 	@Override
