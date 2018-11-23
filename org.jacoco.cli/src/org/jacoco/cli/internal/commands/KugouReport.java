@@ -1,15 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2009, 2018 Mountainminds GmbH & Co. KG and Contributors
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *    John Keeping - initial implementation
- *    Marc R. Hoffmann - rework
- *
- *******************************************************************************/
 package org.jacoco.cli.internal.commands;
 
 import com.kugou.sqlite.ProjectRecordDb;
@@ -106,7 +94,11 @@ public class KugouReport extends Command {
 		for(ExecutionData ed : data.getContents()){
 		    String classFile = hm.get(String.valueOf(ed.getId()));
 		    if (classFile != null){
-                analyzer.analyzeAll(new File(classFile));
+		    	try {
+					analyzer.analyzeAll(new File(classFile));
+				} catch (Exception e){
+		    		e.printStackTrace();
+				}
             } else {
 				System.out.println(String.format("[ERROR]can not find class file %s, %s", ed.getId(), ed.getName()));
             }
