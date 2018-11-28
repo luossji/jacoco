@@ -512,10 +512,12 @@ public class ReportTask extends Task {
 			try {
 				in = resource.getInputStream();
 				loader.load(in);
-			} catch (final IOException e) {
-				throw new BuildException(format(
-						"Unable to read execution data file %s", resource), e,
-						getLocation());
+			} catch (final Exception e) {
+			    log(format("Fail parse data file %s", resource));
+			    e.printStackTrace();
+//				throw new BuildException(format(
+//						"Unable to read execution data file %s", resource), e,
+//						getLocation());
 			} finally {
 				FileUtils.close(in);
 			}

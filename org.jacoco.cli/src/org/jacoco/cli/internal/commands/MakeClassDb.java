@@ -102,7 +102,7 @@ public class MakeClassDb extends Command {
 
 	@Override
 	public int execute(final PrintWriter out, final PrintWriter err)
-			throws IOException, ClassNotFoundException, SQLException{
+			throws ClassNotFoundException, SQLException{
 		mDb = new ProjectRecordDb(outFile.getAbsolutePath());
 		mDb.resetProjectClassRecord();
 		mIsRunning = true;
@@ -111,7 +111,13 @@ public class MakeClassDb extends Command {
 
 		int count = 0;
 		for (final File file : classfiles) {
-			count += parseClassFile(file);
+			try {
+				count += parseClassFile(file);
+			} catch (Exception e){
+				System.out.println(String.format("[ERROR] parse class file Fail.%s", file.getAbsolutePath()));
+				e.printStackTrace();
+			}
+
 		}
 		out.println("parse class count=" + count);
 		System.out.println("[INFO] begin wait write db.");
