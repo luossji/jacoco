@@ -127,7 +127,12 @@ public class KugouReport extends Command {
 				continue;
 			}
 			System.out.println(String.format("[INFO] Loading execution data file %s.",  line));
-			loader.load(new File(line));
+			try {
+				loader.load(new File(line));
+			} catch (Exception e){
+				e.printStackTrace();
+				System.out.println("[ERROR] Load Error.");
+			}
 		}
 		br.close();
 		fr.close();
