@@ -147,17 +147,24 @@ public class KugouReport extends Command {
                     .iterator(); i.hasNext();) {
                 IMethodCoverage method = i.next();
 				List covLines = new ArrayList<String>();
+				List covBranch = new ArrayList<String>();
                 for (int nr = method.getFirstLine(); nr <= method
                         .getLastLine(); nr++) {
                     final ILine line = method.getLine(nr);
                     int lineStatus = line.getStatus();
-                    if(lineStatus != ICounter.EMPTY && lineStatus != ICounter.NOT_COVERED){
-						covLines.add(String.valueOf(nr));
-                    }
+                    if(lineStatus==ICounter.EMPTY || lineStatus==ICounter.NOT_COVERED){
+                    	continue;
+					}
+					covLines.add(String.valueOf(nr));
+                    if(lineStatus == ICounter.PARTLY_COVERED){
+						final ICounter branches = line.getBranchCounter();
+						covBranch.add(String.format("%d;%d;%d",nr, branches.getMissedCount(), branches.getTotalCount()));
+					}
                 }
                 if (!covLines.isEmpty()){ // 有覆盖率才记录
 					String sql = mDb.getAppendCoverageResultRecordValues(coverage.getId(), srcFile,method.getName()+method.getDesc(),
-							method.getFirstLine(), method.getLastLine(), String.join(",", covLines));
+							method.getFirstLine(), method.getLastLine(), String.join(",", covLines),
+							String.join(",", covBranch));
 					mDBQueue.offer(sql);
                 }
             }

@@ -31,18 +31,11 @@ public class ProjectRecordDb extends SqliteHelper {
                 "    method    VARCHAR,\n" +
                 "    startLine INT,\n" +
                 "    endLine   INT, \n" +
-                "    executed_lines VARCHAR\n" +
+                "    executed_lines VARCHAR, \n" +
+                "    executed_branch VARCHAR\n" +
                 ");\n");
     }
 
-    public void appendCoverageResultRecord(long classid, String srcFile, String methodName, int startLine, int endLine, String covLines){
-        String sql = String.format("insert into %s values('%s','%s' ,'%s', %s, %s, '%s')", mCoverageResultTable, classid, srcFile, methodName, startLine, endLine, covLines);
-        try{
-            executeUpdate(sql);
-        } catch (Exception e){
-            System.out.println(String.format("[WARN]exectue sql: %s fail.", sql));
-        }
-    }
     public void appendCoverageResultRecord(String values){
         String sql = String.format("insert into %s values%s", mCoverageResultTable, values);
         System.out.println("[SQL] insert sql");
@@ -52,8 +45,8 @@ public class ProjectRecordDb extends SqliteHelper {
             System.out.println(String.format("[WARN]exectue sql: %s fail.", sql));
         }
     }
-    public String getAppendCoverageResultRecordValues(long classid, String srcFile, String methodName, int startLine, int endLine, String covLines){
-        return String.format("('%s','%s' ,'%s', %s, %s, '%s')",  classid, srcFile, methodName, startLine, endLine, covLines);
+    public String getAppendCoverageResultRecordValues(long classid, String srcFile, String methodName, int startLine, int endLine, String covLines, String executed_branch){
+        return String.format("('%s','%s' ,'%s', %s, %s, '%s', '%s')",  classid, srcFile, methodName, startLine, endLine, covLines, executed_branch);
         // return String.format("insert into %s values('%s','%s' ,'%s', %s, %s, '%s')", mCoverageResultTable, classid, srcFile, methodName, startLine, endLine, covLines);
     }
     public String getAppendClassRecordValues(long classid, String className, String filePath){
@@ -70,31 +63,8 @@ public class ProjectRecordDb extends SqliteHelper {
         }
     }
 
-    public void appendClassRecord(long classid, String className, String filePath){
-        String sql = String.format("insert into %s values('%s', '%s', '%s')", mProjectClassRecordTable, classid, className, filePath);
-        try{
-            executeUpdate(sql);
-        } catch (Exception e){
-            System.out.println(String.format("[WARN]exectue sql: %s fail.", sql));
-        }
-    }
-
-    public String getClassPathByClassid(long classid){
-        String sql = String.format("select filePath from %s where classid=%s", mProjectClassRecordTable, classid);
-        String filePath = null;
-        try{
-            ResultSet rs = getStatement().executeQuery(sql);
-            if(rs.next()){
-                filePath = rs.getString("filePath");
-            }
-        } catch (Exception e){
-            System.out.println(String.format("[WARN]exectue sql: %s fail.", sql));
-        }
-        return filePath;
-    }
-
     public HashMap getAllClassPath(){
-        HashMap<String, String> hm =new HashMap();
+        HashMap<String, String> hm = new HashMap();
         String sql = String.format("select classid, filePath from %s", mProjectClassRecordTable);
         try{
             ResultSet rs = getStatement().executeQuery(sql);
