@@ -11,7 +11,10 @@ import org.kohsuke.args4j.Option;
 
 import java.io.*;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -140,7 +143,6 @@ public class KugouReport extends Command {
     private class CoverageSaver implements ICoverageVisitor {
         public void visitCoverage(final IClassCoverage coverage) {
         	String srcFile = String.format("%s/%s", coverage.getPackageName(), coverage.getSourceFileName());
-			HashSet<Integer> mothodLine = new HashSet();
             for (final Iterator<IMethodCoverage> i = coverage.getMethods()
                     .iterator(); i.hasNext();) {
                 IMethodCoverage method = i.next();
@@ -148,7 +150,6 @@ public class KugouReport extends Command {
 				List covBranch = new ArrayList<String>();
                 for (int nr = method.getFirstLine(); nr <= method
                         .getLastLine(); nr++) {
-					mothodLine.add(nr);
                     final ILine line = method.getLine(nr);
                     int lineStatus = line.getStatus();
                     if(lineStatus==ICounter.EMPTY || lineStatus==ICounter.NOT_COVERED){
@@ -167,19 +168,6 @@ public class KugouReport extends Command {
 					mDBQueue.offer(sql);
                 }
             }
-            for(int nr=coverage.getFirstLine(); nr <= coverage.getLastLine(); nr++){
-            	if(mothodLine.contains(nr)){
-            		continue;
-				}
-				final ILine line = coverage.getLine(nr);
-				int lineStatus = line.getStatus();
-				if(lineStatus==ICounter.EMPTY || lineStatus==ICounter.NOT_COVERED){
-					continue;
-				}
-				String sql = mDb.getAppendCoverageResultRecordValues(coverage.getId(), srcFile,String.format("not_method_%d", nr),
-						nr, nr, String.valueOf(nr), "");
-				mDBQueue.offer(sql);
-			}
 
         }
     }
