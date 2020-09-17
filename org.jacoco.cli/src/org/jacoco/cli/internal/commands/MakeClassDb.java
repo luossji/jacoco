@@ -40,11 +40,10 @@ public class MakeClassDb extends Command {
 				for (;;) {
 					String sqlvalue = mDBQueue.poll(2, TimeUnit.SECONDS);
 					if (null!=sqlvalue){
+						sqlvalues.add(sqlvalue);
 						if(sqlvalues.size() >= 800){
 							mDb.appendClassRecord(String.join(",", sqlvalues));
-							sqlvalues = new ArrayList<String>();
-						} else {
-							sqlvalues.add(sqlvalue);
+							sqlvalues.clear();
 						}
 						continue;
 					}
@@ -94,6 +93,7 @@ public class MakeClassDb extends Command {
 				return 1;
 			}
 		} catch (final IOException e) {
+			System.out.println(String.format("[ERROR] parse class file Fail.%s", location));
 			return 0;
 		}
 		return 0;

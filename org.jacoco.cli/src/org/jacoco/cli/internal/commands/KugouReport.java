@@ -55,11 +55,10 @@ public class KugouReport extends Command {
 				for (;;) {
 					String sqlvalue = mDBQueue.poll(2, TimeUnit.SECONDS);
 					if (null!=sqlvalue){
+						sqlvalues.add(sqlvalue);
 						if(sqlvalues.size() >= 800){
 							mDb.appendCoverageResultRecord(String.join(",", sqlvalues));
 							sqlvalues = new ArrayList<String>();
-						} else {
-							sqlvalues.add(sqlvalue);
 						}
 						continue;
 					}
